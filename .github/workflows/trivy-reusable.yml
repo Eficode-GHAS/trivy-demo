@@ -1,0 +1,44 @@
+name: Reusable Trivy IaC Workflow
+
+on:
+  workflow_call:
+    inputs:
+      scan_ref:
+        required: false
+        type: string
+        default: '.'
+      severity:
+        required: false
+        type: string
+        default: 'CRITICAL,HIGH'
+      fail_on_severity:
+        required: false
+        type: string
+        default: 'CRITICAL,HIGH'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@314ff8b43182423b84c50b1670b0e10f858f2d98
+        with:
+          scan-type: 'config'
+          scan-ref: ${{ inputs.scan_ref }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: ${{ inputs.severity }}
+          exit-code: ${{ contains(inputs.fail_on_severity, 'NONE') && '0' || '1' }}
+
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy-reusable-demo'
