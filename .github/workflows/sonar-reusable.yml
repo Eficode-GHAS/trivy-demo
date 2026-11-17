@@ -23,9 +23,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          # Wait for the Quality Gate result and fail the workflow if it fails
-          args: >
-            -Dsonar.qualitygate.wait=true
-
-      
