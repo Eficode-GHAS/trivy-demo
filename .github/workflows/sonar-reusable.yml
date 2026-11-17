@@ -1,0 +1,31 @@
+name: Reusable Sonar IaC Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full git history enables accurate blame data and New Code detection
+          fetch-depth: 0
+
+      - name: Run SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          # Wait for the Quality Gate result and fail the workflow if it fails
+          args: >
+            -Dsonar.qualitygate.wait=true
+
+      
