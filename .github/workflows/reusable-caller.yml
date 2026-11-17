@@ -1,4 +1,4 @@
-name: Trivy IaC Scan (reusable)
+name: Trivy & Sonar IaC Scan (reusable)
 
 on:
   pull_request:
