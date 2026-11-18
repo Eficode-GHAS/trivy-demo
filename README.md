@@ -11,17 +11,20 @@ This repository is a local demo for GitHub Advanced Security with Trivy IaC scan
 
 All scans run on pull requests to `main` and can be started manually from the Actions tab.
 
-## Minimal Terraform example
+## Terraform examples
 
-The sample in `infra/main.tf` creates a deliberately insecure S3 bucket so the Trivy findings are easy to demonstrate.
+- `infra/main.tf` creates a deliberately insecure S3 bucket so the Trivy findings are easy to demonstrate.
+- `fixtures/insecure-terraform/main.tf` contains additional intentionally insecure scanner fixtures, including unrestricted network ingress, a public unencrypted database, an unencrypted disk, and wildcard IAM permissions. Do not initialize, plan, or apply this fixture directory.
+
+The SonarQube configuration scans repository sources (`sonar.sources=.`), so the fixtures are included when the SonarQube scan runs.
 
 ## Local scan
 
 ```bash
 brew install trivy
-trivy config infra
+trivy config .
 ```
 
 ## Notes
 
-This repo is intended for demos and experimentation only. No push or remote repository has been created.
+This repo is intended for demos and experimentation only. The insecure Terraform examples are for static scanning and must not be deployed.
