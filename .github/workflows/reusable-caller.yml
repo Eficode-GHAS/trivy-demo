@@ -1,6 +1,9 @@
 name: Trivy & Sonar IaC Scan (reusable)
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -16,9 +19,13 @@ jobs:
       scan_ref: '.'
       severity: 'CRITICAL,HIGH'
       fail_on_severity: 'NONE'
+  
   sonarqube:
     permissions:
       actions: read
       contents: read
       security-events: write
     uses: ./.github/workflows/sonar-reusable.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
